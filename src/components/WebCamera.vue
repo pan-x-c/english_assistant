@@ -1,12 +1,17 @@
 <template>
   <div>
-    <video autoplay="autoplay" id="video" width="100%" controls="controls" @click.once="camera"></video>
+    <video id="video" width="100%" height="75%" controls="controls" @click.once="camera" poster="../../static/img/webcamera.png">
+
+    </video>
   </div>
 </template>
 
 <script>
   export default {
     name: 'WebCamera',
+    // mounted () {
+    //   this.camera()
+    // },
     methods: {
       camera: function () {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia ||
