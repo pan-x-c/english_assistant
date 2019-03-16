@@ -3,20 +3,16 @@
     <section id="practice" class="bg-primary text-white practice">
       <div class="container">
         <div class="row">
-          <div class="col-lg-7">
-            <div>
-              <div>
-                <button class="btn btn-outline-light ea-btn" @click="onPlay($event)">Start rating</button>
-                <button class="btn btn-outline-light ea-btn" @click="onStop($event)">end rating</button>
-              </div>
-              <video id="cam" width="100%" height="75%" controls="controls" @click.once="camera()" poster="../../static/img/webcamera.png"></video>
+            <div class="col-lg-12">
+              <button class="btn btn-outline-light ea-btn" @click="onPlay($event)">Start rating</button>
+              <button class="btn btn-outline-light ea-btn" @click="onStop($event)">end rating</button>
             </div>
+          <div class="col-lg-7">
+              <video id="cam" width="100%" height="75%" controls="controls" @click.once="camera()" poster="../../static/img/webcamera.png"></video>
           </div>
           <div class="col-lg-5">
-            <div v-if="videoType">
               <!--<video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" @pause="onStop($event)" @playing="onPlay($event)" controls="controls" poster="../static/img/playvideo.png"></video>-->
               <video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" controls="controls" poster="../static/img/playvideo.png"></video>
-            </div>
             <div id="radar" style="width:100%;height:200px;"></div>
           </div>
           <div id="time-line" style="width:100%;height:100px;"></div>
@@ -55,7 +51,7 @@
         radarChart: null,
         lineChart: null,
         playing: false,
-        time_in: 1000
+        time_in: 400
       }
     },
     computed: {
@@ -309,8 +305,7 @@
 <style>
   .ea-btn {
     width: 45%;
-    margin-left: 2.5%;
-    margin-right: 2.5%;
+    margin: 2px 2.5%;
     float: left;
   }
 </style>
