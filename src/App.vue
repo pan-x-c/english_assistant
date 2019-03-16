@@ -4,8 +4,9 @@
       <div class="container">
         <div class="row">
             <div class="col-lg-12">
-              <button class="btn btn-outline-light ea-btn" :class="playing? 'disabled':''" @click="onPlay($event)">Start rating</button>
-              <button class="btn btn-outline-light ea-btn" :class="playing? '':'disabled'" @click="onStop($event)">end rating</button>
+              <button class="btn btn-outline-light ea-btn col-lg-4" :class="playing? 'disabled':''" @click="onPlay($event)">Start rating</button>
+              <button class="btn btn-outline-light ea-btn col-lg-4" :class="playing? '':'disabled'" @click="onStop($event)">end rating</button>
+              <button class="btn btn-outline-light ea-btn col-lg-4" @click="clearRate($event)">Clear rate</button>            
             </div>
           <div class="col-lg-7">
               <video id="cam" width="100%" autoplay poster="../../static/img/webcamera.png"></video>
@@ -40,6 +41,7 @@
 
 <script>
   import VideoList from '@/components/VideoList'
+  // import func from './vue-temp/vue-editor-bridge'
 
   export default {
     name: 'app',
@@ -50,6 +52,8 @@
         radarChart: null,
         lineChart: null,
         playing: false,
+        radarOption: null,
+        lineOption: null,
         time_in: 500
       }
     },
@@ -76,12 +80,19 @@
         }
         return rd
       },
+      clearRate: function (event) {
+        this.radarChart.clear()
+        this.lineChart.clear()
+        this.radarChart.setOption(this.radarOption)
+        this.lineChart.setOption(this.lineOption)
+        this.currentIndex = 0
+      },
       changeVideoSource: function (name) {
         this.currentVideo = name
       },
       drawRadar: function () {
         let radarChart = this.$echarts.init(document.getElementById('radar'))
-        let radarOption = {
+        this.radarOption = {
           tooltip: {
             trigger: 'axis'
           },
@@ -142,12 +153,12 @@
             }
           ]
         }
-        radarChart.setOption(radarOption)
+        radarChart.setOption(this.radarOption)
         return radarChart
       },
       drawLine: function () {
         let lineChart = this.$echarts.init(document.getElementById('time-line'))
-        let lineOption = {
+        this.lineOption = {
           tooltip: {
             trigger: 'axis'
           },
@@ -218,7 +229,7 @@
             color: 'white'
           }]
         }
-        lineChart.setOption(lineOption)
+        lineChart.setOption(this.lineOption)
         return lineChart
       },
       updateRadar: function (scores) {
@@ -304,8 +315,7 @@
 
 <style>
   .ea-btn {
-    width: 45%;
-    margin: 2px 2.5%;
+    width: 90%;
     float: left;
   }
 </style>
