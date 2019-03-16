@@ -4,6 +4,8 @@ import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import echarts from 'echarts'
 import App from './App'
+import * as AI from '../static/js/face-api.js'
+
 // import Camera from '@/components/Camera'
 // import router from './router'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -14,6 +16,7 @@ import '../static/css/freelancer.css'
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts
+Vue.prototype.$AI = AI
 
 /* eslint-disable no-new */
 new Vue({
@@ -21,3 +24,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
