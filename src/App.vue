@@ -4,15 +4,14 @@
       <div class="container">
         <div class="row">
             <div class="col-lg-12">
-              <button class="btn btn-outline-light ea-btn" @click="onPlay($event)">Start rating</button>
-              <button class="btn btn-outline-light ea-btn" @click="onStop($event)">end rating</button>
+              <button class="btn btn-outline-light ea-btn" :class="playing? 'disabled':''" @click="onPlay($event)">Start rating</button>
+              <button class="btn btn-outline-light ea-btn" :class="playing? '':'disabled'" @click="onStop($event)">end rating</button>
             </div>
           <div class="col-lg-7">
-              <video id="cam" width="100%" height="75%" controls="controls" @click.once="camera()" poster="../../static/img/webcamera.png"></video>
+              <video id="cam" width="100%" autoplay poster="../../static/img/webcamera.png"></video>
           </div>
           <div class="col-lg-5">
-              <!--<video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" @pause="onStop($event)" @playing="onPlay($event)" controls="controls" poster="../static/img/playvideo.png"></video>-->
-              <video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" controls="controls" poster="../static/img/playvideo.png"></video>
+              <video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" controls="controls" @ended="onStop($event)" @pause="onStop($event)" @play="onPlay($event)" poster="../static/img/playvideo.png"></video>
             <div id="radar" style="width:100%;height:200px;"></div>
           </div>
           <div id="time-line" style="width:100%;height:100px;"></div>
@@ -35,13 +34,13 @@
       </div>
     </section>
   </div>
-  
+
 </template>
 
 
 <script>
   import VideoList from '@/components/VideoList'
-  
+
   export default {
     name: 'app',
     data () {
@@ -51,7 +50,7 @@
         radarChart: null,
         lineChart: null,
         playing: false,
-        time_in: 400
+        time_in: 500
       }
     },
     computed: {
@@ -67,6 +66,7 @@
       this.lineChart = this.drawLine()
       await this.$AI.nets.ssdMobilenetv1.load('/static/weights')
       await this.$AI.loadFaceLandmarkModel('/static/weights')
+      this.camera()
     },
     methods: {
       randomdata: function (length) {
