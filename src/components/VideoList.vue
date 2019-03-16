@@ -4,7 +4,7 @@
       <h2 class="text-center text-uppercase text-secondary mb-0">Videos</h2>
       <hr class="star-dark mb-5">
       <div class="row">
-        <div v-for="item in videoList"  class="col-md-4 col-xl-2 col-6 video-item">
+        <div v-for="item in videoList"  class="col-md-4 col-xl-2 col-6 video-item" :key=item>
           <a @click="changeVideo(item)">
             <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
               <div class="portfolio-item-caption-content my-auto w-100 text-center text-white">
@@ -31,7 +31,7 @@
     data () {
       return {
         videoList: [
-          'cabin', 'cake', 'circus', 'game', 'safe', 'submarine'
+          'learn_1', 'test_1', 'learn_2', 'test_2', 'learn_3', 'test_3'
         ],
         currentVideo: ''
       }

@@ -5,11 +5,18 @@
         <div class="row">
           <div class="col-lg-7">
             <div>
+              <div>
+                <button class="btn btn-outline-light ea-btn" @click="onPlay($event)">Start rating</button>
+                <button class="btn btn-outline-light ea-btn" @click="onStop($event)">end rating</button>
+              </div>
               <video id="cam" width="100%" height="75%" controls="controls" @click.once="camera()" poster="../../static/img/webcamera.png"></video>
             </div>
           </div>
           <div class="col-lg-5">
-            <video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" @pause="onStop($event)" @playing="onPlay($event)" controls="controls" poster="../static/img/playvideo.png"></video>
+            <div v-if="videoType">
+              <!--<video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" @pause="onStop($event)" @playing="onPlay($event)" controls="controls" poster="../static/img/playvideo.png"></video>-->
+              <video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" controls="controls" poster="../static/img/playvideo.png"></video>
+            </div>
             <div id="radar" style="width:100%;height:200px;"></div>
           </div>
           <div id="time-line" style="width:100%;height:100px;"></div>
@@ -17,18 +24,16 @@
       </div>
     </section>
     <video-list v-on:change-video="changeVideoSource"></video-list>
-    <!-- <button @click="updateRadar(randomdata(4))">更新雷达</button>
-    <button @click="updateLine(randomdata(4))">更新折线</button> -->
     <section class="bg-primary text-white mb-0" id="instruct">
       <div class="container">
         <h2 class="text-center text-uppercase text-white">Instructions</h2>
         <hr class="star-light mb-5">
         <div class="row">
           <div class="col-lg-4 ml-auto">
-            <p class="lead">使用前务必允许使用camera，点击videos中的任意视频开始学习</p>
+            <p class="lead">使用前务必允许网站使用camera，点击videos中的任意视频开始学习。使用过程中将摄像头对准面部，保证摄像头能够拍摄到完整的嘴型</p>
           </div>
           <div class="col-lg-4 mr-auto">
-            <p class="lead">将摄像头对准面部，保证摄像头能够拍摄到完整的嘴型</p>
+            <p class="lead">learn类型的视频中。test类型视频中会提取对应的learn类型视频的关键语句进行重复性测试，每个句子重复三遍</p>
           </div>
         </div>
       </div>
@@ -45,12 +50,17 @@
     name: 'app',
     data () {
       return {
-        currentVideo: 'cabin',
+        currentVideo: 'learn_1',
         currentIndex: 0,
         radarChart: null,
         lineChart: null,
         playing: false,
         time_in: 1000
+      }
+    },
+    computed: {
+      videoType () {
+        return this.currentVideo.split('_')[0]
       }
     },
     components: {
@@ -297,4 +307,10 @@
 </script>
 
 <style>
+  .ea-btn {
+    width: 45%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    float: left;
+  }
 </style>
