@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-lg-7">
             <div>
-              <video id="cam" width="100%" height="75%" controls="controls" @click.once="camera" poster="../../static/img/webcamera.png"></video>
+              <video id="cam" width="100%" height="75%" controls="controls" @click.once="camera()" poster="../../static/img/webcamera.png"></video>
             </div>
           </div>
           <div class="col-lg-5">
@@ -17,8 +17,8 @@
       </div>
     </section>
     <video-list v-on:change-video="changeVideoSource"></video-list>
-    <button @click="updateRadar(randomdata(4))">更新雷达</button>
-    <button @click="updateLine(randomdata(4))">更新折线</button>
+    <!-- <button @click="updateRadar(randomdata(4))">更新雷达</button>
+    <button @click="updateLine(randomdata(4))">更新折线</button> -->
     <section class="bg-primary text-white mb-0" id="instruct">
       <div class="container">
         <h2 class="text-center text-uppercase text-white">Instructions</h2>
@@ -50,7 +50,7 @@
         radarChart: null,
         lineChart: null,
         playing: false,
-        time_in: 400
+        time_in: 1000
       }
     },
     components: {
@@ -61,7 +61,6 @@
       this.lineChart = this.drawLine()
       await this.$AI.nets.ssdMobilenetv1.load('/static/weights')
       await this.$AI.loadFaceLandmarkModel('/static/weights')
-      this.camera()
     },
     methods: {
       randomdata: function (length) {
@@ -89,10 +88,10 @@
           radar: [
             {
               indicator: [
-                {text: 'accent', max: 100},
-                {text: 'shape of mouth', max: 100},
-                {text: 'liaison', max: 100},
-                {text: 'pause', max: 100}
+                {text: 'accent', max: 1},
+                {text: 'shape of mouth', max: 1},
+                {text: 'liaison', max: 1},
+                {text: 'pause', max: 1}
               ],
               radius: '60%',
               name: {
@@ -120,7 +119,7 @@
               data: [
                 {
                   itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                  value: this.randomdata(4)
+                  value: [0, 0, 0, 0]
                 }
               ],
               symbol: 'none',
@@ -185,7 +184,7 @@
                 color: '#fff'
               }
             },
-            max: 101
+            max: 1
           },
           series: [{
             name: 'accent',
@@ -268,13 +267,11 @@
         const videoEL = document.querySelector('#video')
         const resultWebCam = await this.$AI.detectSingleFace(videoELWebCam, new this.$AI.SsdMobilenetv1Options({ minConfidence: 0.5 })).withFaceLandmarks()
         const result = await this.$AI.detectSingleFace(videoEL, new this.$AI.SsdMobilenetv1Options({ minConfidence: 0.5 })).withFaceLandmarks()
-        console.log(result)
-        console.log(resultWebCam)
         if (result !== undefined && resultWebCam !== undefined) {
-          const mark1 = this.getCosDistance(this.getFeature(result, 15, 20), this.getFeature(resultWebCam, 15, 20))
-          const mark2 = this.getCosDistance(this.getFeature(result, 15, 30), this.getFeature(resultWebCam, 15, 30))
-          const mark3 = this.getCosDistance(this.getFeature(result, 15, 10), this.getFeature(resultWebCam, 15, 10))
-          const mark4 = this.getCosDistance(this.getFeature(result, 15, 50), this.getFeature(resultWebCam, 15, 50))
+          const mark1 = this.getCosDistance(this.getFeature(result.landmarks, 15, 20), this.getFeature(resultWebCam.landmarks, 15, 20))
+          const mark2 = this.getCosDistance(this.getFeature(result.landmarks, 15, 30), this.getFeature(resultWebCam.landmarks, 15, 30))
+          const mark3 = this.getCosDistance(this.getFeature(result.landmarks, 15, 10), this.getFeature(resultWebCam.landmarks, 15, 10))
+          const mark4 = this.getCosDistance(this.getFeature(result.landmarks, 15, 50), this.getFeature(resultWebCam.landmarks, 15, 50))
           this.updateLine([mark1, mark2, mark3, mark4])
           this.updateRadar([mark1, mark2, mark3, mark4])
         }
