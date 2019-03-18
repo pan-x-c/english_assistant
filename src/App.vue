@@ -1,19 +1,47 @@
 <template>
   <div id="app">
+    <nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top"><img src="static/img/logo.png"/></a>
+        <button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item mx-0 mx-lg-1">
+              <a v-if="!end" class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger active" href="#practice">Practice</a>
+              <a v-else class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger active" href="#practice">Your Score: {{finalScore}}</a>
+            </li>
+            <li class="nav-item mx-0 mx-lg-1">
+              <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Videos</a>
+            </li>
+            <li class="nav-item mx-0 mx-lg-1">
+              <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#instruct">Help</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="copyright py-4 text-center text-white" style="visibility:hidden;">
+      <div class="container">
+        placeholder
+      </div>
+    </div>
     <section id="practice" class="bg-primary text-white practice">
       <div class="container">
         <div class="row">
             <div class="col-lg-12">
               <button class="btn btn-outline-light ea-btn col-lg-4" :class="playing? 'disabled':''" @click="onPlay($event)">Start rating</button>
               <button class="btn btn-outline-light ea-btn col-lg-4" :class="playing? '':'disabled'" @click="onStop($event)">end rating</button>
-              <button class="btn btn-outline-light ea-btn col-lg-4" @click="clearRate($event)">Clear rate</button>            
+              <button class="btn btn-outline-light ea-btn col-lg-4" @click="clearRate($event)">Clear rate</button>
             </div>
-          <div class="col-lg-7">
-              <video id="cam" width="100%" autoplay poster="../../static/img/webcamera.png"></video>
+          <div class="col-lg-8">
+            <video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" controls="controls" @ended="onEnd($event)" @pause="onStop($event)" @play="onPlay($event)" poster="../static/img/playvideo.png"></video>
           </div>
-          <div class="col-lg-5">
-              <video :src="'static/video/'+currentVideo+'.mp4'" width="100%" id="video" controls="controls" @ended="onStop($event)" @pause="onStop($event)" @play="onPlay($event)" poster="../static/img/playvideo.png"></video>
-            <div id="radar" style="width:100%;height:200px;"></div>
+          <div class="col-lg-4">
+            <video id="cam" width="100%" autoplay poster="../../static/img/webcamera.png"></video>
+            <div id="radar" style="gitwidth:100%;height:200px;"></div>
           </div>
           <div id="time-line" style="width:100%;height:100px;"></div>
         </div>
@@ -54,7 +82,9 @@
         playing: false,
         radarOption: null,
         lineOption: null,
-        time_in: 500
+        time_in: 500,
+        end: false,
+        finalScore: 0
       }
     },
     computed: {
@@ -89,6 +119,13 @@
       },
       changeVideoSource: function (name) {
         this.currentVideo = name
+      },
+      calFinalScore () {
+        if (!this.radarChart) {
+          return 0
+        }
+        let scores = this.radarChart.getOption().series[0].data[0].value
+        this.finalScore = Math.round((scores[0] + scores[1] + scores[2] + scores[3]) * 2.5)
       },
       drawRadar: function () {
         let radarChart = this.$echarts.init(document.getElementById('radar'))
@@ -172,9 +209,9 @@
           ],
           grid: {
             top: '20%',
-            left: '10%',
+            left: '3%',
             bottom: '25%',
-            right: '10%'
+            right: '3%'
           },
           xAxis: {
             type: 'value',
@@ -275,9 +312,15 @@
         }
         this.playing = true
         setTimeout(this.getResult(), this.time_in)
+        this.end = false
       },
       onStop: function (event) {
         this.playing = false
+      },
+      onEnd: function (event) {
+        this.onStop(event)
+        this.calFinalScore()
+        this.end = true
       },
       getResult: async function () {
         const videoELWebCam = document.querySelector('#cam')
