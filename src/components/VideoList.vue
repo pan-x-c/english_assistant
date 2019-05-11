@@ -1,8 +1,6 @@
 <template>
   <section class="portfolio" id="portfolio">
     <div class="container">
-      <h2 class="text-center text-uppercase text-secondary mb-0">Videos</h2>
-      <hr class="star-dark mb-5">
       <div class="row">
         <div v-for="item in videoList"  class="col-md-4 col-xl-2 col-6 video-item" :key=item>
           <a @click="changeVideo(item)">
@@ -46,6 +44,9 @@
 </script>
 
 <style scoped>
+  #portfolio {
+    padding: 10px;
+  }  
   .video-item {
     cursor: pointer;
   }

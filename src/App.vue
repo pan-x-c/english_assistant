@@ -50,12 +50,6 @@
               >Practice</a>
             </li>
             <li class="nav-item mx-0 mx-lg-1">
-              <a
-                class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                href="#portfolio"
-              >Videos</a>
-            </li>
-            <li class="nav-item mx-0 mx-lg-1">
               <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#instruct">Help</a>
             </li>
           </ul>
@@ -107,7 +101,7 @@
     <video-list v-on:change-video="changeVideoSource"></video-list>
     <section class="bg-primary text-white mb-0" id="instruct">
       <div class="container">
-        <h2 class="text-center text-uppercase text-white">Instructions</h2>
+        <h2 class="text-center text-uppercase text-white">Help</h2>
         <hr class="star-light mb-5">
         <div class="row">
           <div class="col-lg-4 ml-auto">
@@ -484,6 +478,10 @@ export default {
 .ea-btn {
   width: 90%;
   float: left;
+}
+
+#practice {
+  margin-bottom: 10px;
 }
 
 @media (min-width:1170px) {
