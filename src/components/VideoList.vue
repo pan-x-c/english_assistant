@@ -9,7 +9,7 @@
             <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
               <div class="portfolio-item-caption-content my-auto w-100 text-center text-white">
                 <p>{{item}}</p>
-                <i class="fas fa-play-circle fa-3x"></i>
+                <i class="fas fa-play-circle fa-4x"></i>
               </div>
             </div>
           <img class="img-fluid" :src="'static/img/portfolio/' + item + '.png'" alt="">
@@ -55,5 +55,10 @@
   }
   .portfolio-item-caption-content {
     margin-right: 30px;
+    margin-top: 10% !important;
+  }
+  .img-fluid {
+    border-radius: 10%;
+    margin-bottom: 10px;
   }
 </style>

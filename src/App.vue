@@ -114,7 +114,7 @@
             <p class="lead">使用前务必允许网站使用camera，点击videos中的任意视频开始学习。使用过程中将摄像头对准面部，保证摄像头能够拍摄到完整的嘴型</p>
           </div>
           <div class="col-lg-4 mr-auto">
-            <p class="lead">learn类型的视频中。test类型视频中会提取对应的learn类型视频的关键语句进行重复性测试，每个句子重复三遍</p>
+            <p class="lead">learn类型视频较长，用于教学。test类型视频中会提取对应的learn类型视频的关键语句进行重复性测试，每个句子重复三遍。用户可以通过test视频检验自己的学习成果。</p>
           </div>
         </div>
       </div>
@@ -192,12 +192,6 @@ export default {
         tooltip: {
           trigger: "axis"
         },
-        grid: {
-          top: "0%",
-          left: "0%",
-          bottom: "0%",
-          right: "0%"
-        },
         radar: [
           {
             indicator: [
@@ -207,9 +201,11 @@ export default {
               { text: "pause", max: 1 }
             ],
             radius: "60%",
+            nameGap: 5,
             name: {
               textStyle: {
-                color: "rgb(255, 255, 255)"
+                color: "rgb(255, 255, 255)",
+                fontSize: 9
               }
             }
           }
@@ -490,21 +486,6 @@ export default {
   float: left;
 }
 
-/* #video{
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-  object-fit: cover;
-} */
-
-  #radar{
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    /* object-fit: cover; */
-  }
-
 @media (min-width:1170px) {
   #cam{
     width: 100%;
@@ -516,7 +497,7 @@ export default {
   }
   #radar{
     width: 100%;
-    height: 180px;
+    height: 200px;
     box-sizing: border-box;
   }
 }
@@ -533,7 +514,7 @@ export default {
   }
   #radar{
     width: 50%;
-    box-sizing: border-box;
+    height: 200px;
     float: right;
   }
 }
