@@ -489,4 +489,13 @@ export default {
   width: 90%;
   float: left;
 }
+
+@media (max-width:790px){
+  #cam{
+    width: 100%;
+    height: 180px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+}
 </style>
