@@ -135,12 +135,25 @@ export default {
       time_in: 500,
       end: false,
       finalScore: 0,
-      suggest: "口型不准",
     };
   },
   computed: {
     videoType() {
       return this.currentVideo.split("_")[0];
+    },
+    suggest() {
+      if(this.finalScore<3) {
+        return "From small beginnings comes great things"
+      }
+      else if (this.finalScore < 6) {
+        return "You have to believe in yourself."
+      }
+      else if(this.finalScore < 8) {
+        return "Keep on going never give up"
+      }
+      else {
+        return "Never underestimate your power to change yourself"
+      }
     }
   },
   components: {
@@ -482,6 +495,11 @@ export default {
 
 #practice {
   margin-bottom: 10px;
+}
+
+#video {
+  max-height: 420px;
+  overflow: hidden;
 }
 
 @media (min-width:1170px) {
