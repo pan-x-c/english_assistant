@@ -96,9 +96,9 @@
               poster="../static/img/playvideo.png"
             ></video>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-4 side-bar">
             <video id="cam" width="100%" autoplay poster="../../static/img/webcamera.png"></video>
-            <div id="radar" style="gitwidth:100%;height:200px;"></div>
+            <div id="radar"></div>
           </div>
           <div id="time-line" style="width:100%;height:100px;"></div>
         </div>
@@ -193,16 +193,16 @@ export default {
           trigger: "axis"
         },
         grid: {
-          top: "10%",
-          left: 0,
-          bottom: "10%",
-          right: 0
+          top: "0%",
+          left: "0%",
+          bottom: "0%",
+          right: "0%"
         },
         radar: [
           {
             indicator: [
               { text: "accent", max: 1 },
-              { text: "shape of mouth", max: 1 },
+              { text: "mouth", max: 1 },
               { text: "liaison", max: 1 },
               { text: "pause", max: 1 }
             ],
@@ -490,12 +490,51 @@ export default {
   float: left;
 }
 
-@media (max-width:790px){
+/* #video{
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  object-fit: cover;
+} */
+
+  #radar{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    /* object-fit: cover; */
+  }
+
+@media (min-width:1170px) {
   #cam{
+    width: 100%;
+    height: 220px;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* object-fit: cover; */
+    float: left;
+  }
+  #radar{
     width: 100%;
     height: 180px;
     box-sizing: border-box;
-    overflow: hidden;
+  }
+}
+
+@media (max-width:1170px){
+  .sidebar {
+    width: 100%;
+  }
+  #cam{
+    width: 50%;
+    height: 200px;
+    box-sizing: border-box;
+    float: left;
+  }
+  #radar{
+    width: 50%;
+    box-sizing: border-box;
+    float: right;
   }
 }
 </style>
