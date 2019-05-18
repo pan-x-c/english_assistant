@@ -89,6 +89,14 @@
               @play="onPlay($event)"
               poster="../static/img/playvideo.png"
             ></video>
+            <div class="camera-mask">
+              <div
+                class="point"
+                v-bind:key="i"
+                v-for="(vpos,i) in vpositions"
+                v-bind:style="{left:vpos.x/videoWidth*vwidth+5+'px', top:vpos.y/videoHeight*vheight+'px'}"
+              ></div>
+            </div>
           </div>
           <div class="col-lg-4 side-bar">
             <video id="cam" autoplay poster="../../static/img/webcamera.png"></video>
@@ -139,18 +147,23 @@ export default {
       currentIndex: 0,
       cameraWidth: 350,
       cameraHeight: 200,
+      videoWidth: 350,
+      videoHeight: 200,
       width: 350,
       height: 200,
+      vwidth: 350,
+      vheight: 200,
       radarChart: null,
       lineChart: null,
       playing: false,
       radarOption: null,
       lineOption: null,
-      time_in: 500,
+      time_in: 300,
       end: false,
       finalScore: 0,
       offsetLeft: 0,
-      positions: []
+      positions: [],
+      vpositions: []
     };
   },
   computed: {
@@ -173,19 +186,11 @@ export default {
     VideoList
   },
   mounted: async function() {
-    const videoELWebCam = document.querySelector("#cam");
-    this.cameraWidth = videoELWebCam.videoWidth;
-    this.cameraHeight = videoELWebCam.videoHeight;
     this.radarChart = this.drawRadar();
     this.lineChart = this.drawLine();
     window.onresize = () => {
       return (() => {
-        const videoELWebCam = document.querySelector("#cam");
-        this.cameraWidth = videoELWebCam.videoWidth;
-        this.cameraHeight = videoELWebCam.videoHeight;
-        this.height = videoELWebCam.offsetHeight;
-        this.width = (this.height / this.cameraHeight) * this.cameraWidth;
-        this.offsetLeft = (videoELWebCam.offsetWidth - this.width) / 2;
+        this.updataVideoSize();
       })();
     };
     await this.$AI.nets.ssdMobilenetv1.load("/static/weights");
@@ -407,6 +412,19 @@ export default {
       this.currentIndex++;
       this.lineChart.resize();
     },
+    updataVideoSize: function() {
+      const videoELWebCam = document.querySelector("#cam");
+      const videoEL = document.querySelector("#video");
+      this.cameraWidth = videoELWebCam.videoWidth;
+      this.cameraHeight = videoELWebCam.videoHeight;
+      this.height = videoELWebCam.offsetHeight;
+      this.width = (this.height / this.cameraHeight) * this.cameraWidth;
+      this.offsetLeft = (videoELWebCam.offsetWidth - this.width) / 2;
+      this.videoWidth = videoEL.videoWidth;
+      this.videoHeight = videoEL.videoHeight;
+      this.vheight = videoEL.offsetHeight;
+      this.vwidth = videoEL.offsetWidth;
+    },
     camera: async function() {
       navigator.getUserMedia =
         navigator.getUserMedia ||
@@ -436,12 +454,7 @@ export default {
         alert("模型无法加载，请使用最新版本的chrome浏览器");
         return;
       }
-      const videoELWebCam = document.querySelector("#cam");
-      this.cameraWidth = videoELWebCam.videoWidth;
-      this.cameraHeight = videoELWebCam.videoHeight;
-      this.height = videoELWebCam.offsetHeight;
-      this.width = (this.height / this.cameraHeight) * this.cameraWidth;
-      this.offsetLeft = (videoELWebCam.offsetWidth - this.width) / 2;
+      this.updataVideoSize();
       this.playing = true;
       setTimeout(this.getResult(), this.time_in);
       this.end = false;
@@ -472,6 +485,7 @@ export default {
         .withFaceLandmarks();
       if (result !== undefined && resultWebCam !== undefined) {
         this.positions = resultWebCam.landmarks.positions.slice(48, 67);
+        this.vpositions = result.landmarks.positions.slice(48, 67);
         const mark1 = this.getCosDistance(
           this.getFeature(result.landmarks, 15, 20),
           this.getFeature(resultWebCam.landmarks, 15, 20)
@@ -489,13 +503,16 @@ export default {
           this.getFeature(resultWebCam.landmarks, 15, 50)
         );
         const data = [
-          Math.sqrt(mark1),
-          Math.sqrt(mark2),
-          Math.sqrt(mark3),
-          Math.sqrt(mark4)
+          mark1*3<10?mark1*3:10,
+          mark2*3<10?mark2*3:10,
+          mark3*3<10?mark3*3:10,
+          mark4*3<10?mark4*3:10
         ];
         this.updateLine(data);
         this.updateRadar(data);
+      }
+      else {
+        this.vpositions = [];
       }
       if (this.playing === true) {
         setTimeout(this.getResult(), this.time_in);
@@ -537,7 +554,7 @@ export default {
 }
 
 #video {
-  max-height: 420px;
+  max-height: 450px;
   overflow: hidden;
 }
 
@@ -567,7 +584,7 @@ export default {
   background-color: white;
   position: absolute;
   z-index: 20;
-  transition: top 0.5s, left 0.5s;
+  transition: top 0.3s, left 0.3s;
 }
 
 @media (min-width: 1170px) {
