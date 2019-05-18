@@ -390,7 +390,7 @@ export default {
       window.URL =
         window.URL || window.webkitURL || window.mozURL || window.msURL;
       if (!navigator.getUserMedia) {
-        alert("不支持");
+        alert("您使用的浏览器不支持此应用，请更换最新版的chrome浏览器，并授予使用浏览器和麦克风的权限");
       } else {
         navigator.mediaDevices
           .getUserMedia({
