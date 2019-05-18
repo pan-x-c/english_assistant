@@ -91,7 +91,10 @@
             ></video>
           </div>
           <div class="col-lg-4 side-bar">
-            <video id="cam" width="100%" autoplay poster="../../static/img/webcamera.png"></video>
+            <video id="cam" autoplay poster="../../static/img/webcamera.png"></video>
+            <div id="camera-mask">
+              <div class="point" v-bind:key="i" v-for="(pos,i) in positions" v-bind:style="{left:pos.x/cameraWidth*width+offsetLeft+'px', top:pos.y/cameraHeight*height+'px'}"></div>
+            </div>
             <div id="radar"></div>
           </div>
           <div id="time-line" style="width:100%;height:100px;"></div>
@@ -125,8 +128,12 @@ export default {
   name: "app",
   data() {
     return {
-      currentVideo: "learn_1",
+      currentVideo: "test_1",
       currentIndex: 0,
+      cameraWidth: 350,
+      cameraHeight: 200,
+      width: 350,
+      height: 200,
       radarChart: null,
       lineChart: null,
       playing: false,
@@ -135,6 +142,8 @@ export default {
       time_in: 500,
       end: false,
       finalScore: 0,
+      offsetLeft:0,
+      positions:[]
     };
   },
   computed: {
@@ -160,6 +169,9 @@ export default {
     VideoList
   },
   mounted: async function() {
+    const videoELWebCam = document.querySelector("#cam");
+    this.cameraWidth = videoELWebCam.videoWidth;
+    this.cameraHeight = videoELWebCam.videoHeight;
     this.radarChart = this.drawRadar();
     this.lineChart = this.drawLine();
     await this.$AI.nets.ssdMobilenetv1.load("/static/weights");
@@ -390,7 +402,7 @@ export default {
       window.URL =
         window.URL || window.webkitURL || window.mozURL || window.msURL;
       if (!navigator.getUserMedia) {
-        alert("无法使用摄像头和麦克风，请检查摄像头和麦克风的授权情况，推荐最新版的chrome浏览器访问此应用。由于Apple对摄像头权限管理太过严格，该应用无法在Apple设备上运行，使用Apple的用户请更换成其他设备。");
+        alert("无法使用摄像头和麦克风，请检查摄像头和麦克风的授权情况，推荐最新版的chrome浏览器访问此应用。由于Apple对摄像头权限控制太过严格，该应用无法在Apple设备上运行，使用Apple的用户请更换成其他设备。");
       } else {
         navigator.mediaDevices
           .getUserMedia({
@@ -404,11 +416,16 @@ export default {
       }
     },
     onPlay: function(event) {
-      console.log(this.$AI);
       if (this.$AI.nets.ssdMobilenetv1.params === undefined) {
-        alert("模型未加载");
+        alert("模型无法加载，请使用最新版本的chrome浏览器");
         return;
       }
+      const videoELWebCam = document.querySelector("#cam");
+      this.cameraWidth = videoELWebCam.videoWidth;
+      this.cameraHeight = videoELWebCam.videoHeight;
+      this.height = videoELWebCam.offsetHeight;
+      this.width = this.height/this.cameraHeight*this.cameraWidth;
+      this.offsetLeft = (videoELWebCam.offsetWidth - this.width)/2;
       this.playing = true;
       setTimeout(this.getResult(), this.time_in);
       this.end = false;
@@ -438,9 +455,10 @@ export default {
         )
         .withFaceLandmarks();
       if (result !== undefined && resultWebCam !== undefined) {
+        this.positions = resultWebCam.landmarks.positions.slice(48,67);
         const mark1 = this.getCosDistance(
           this.getFeature(result.landmarks, 15, 20),
-          this.getFeature(resultWebCam.landmarks, 15, 20)
+          this.getFeature(resultWebCam.landmarks, 15, 20)          
         );
         const mark2 = this.getCosDistance(
           this.getFeature(result.landmarks, 15, 30),
@@ -502,10 +520,39 @@ export default {
   overflow: hidden;
 }
 
+.sidebar {
+  position: relative;
+  overflow: hidden;
+}
+
+#camera-mask {
+  position: absolute;
+  /* top: -10px; */
+  /* left: -10px; */
+  width: 100px;
+  height: 100px;
+  /* background-color: #fff; */
+}
+
+#cam {
+  height: 200px;
+  float: left;
+}
+
+.point {
+  height: 4px;
+  width: 4px;
+  border-radius: 2px;
+  background-color: lightseagreen;
+  position: absolute;
+  z-index: 20;
+  transition: top .5s, left .5s;
+}
+
 @media (min-width:1170px) {
   #cam{
     width: 100%;
-    height: 220px;
+    height: 200px;
     box-sizing: border-box;
     overflow: hidden;
     /* object-fit: cover; */
