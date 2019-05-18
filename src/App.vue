@@ -390,7 +390,7 @@ export default {
       window.URL =
         window.URL || window.webkitURL || window.mozURL || window.msURL;
       if (!navigator.getUserMedia) {
-        alert("您使用的浏览器不支持此应用，请更换最新版的chrome浏览器，并授予使用摄像头和麦克风的权限");
+        alert("无法使用摄像头和麦克风，请检查摄像头和麦克风的授权情况，推荐最新版的chrome浏览器访问此应用。由于Apple对摄像头权限管理太过严格，该应用无法在Apple设备上运行，使用Apple的用户请更换成其他设备。");
       } else {
         navigator.mediaDevices
           .getUserMedia({
@@ -399,7 +399,7 @@ export default {
           })
           .then(stream => {
             const video = document.querySelector("#cam");
-            video.srcObject = stream;
+            video.srcObject = stream; 
           });
       }
     },
