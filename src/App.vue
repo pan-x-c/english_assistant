@@ -93,7 +93,12 @@
           <div class="col-lg-4 side-bar">
             <video id="cam" autoplay poster="../../static/img/webcamera.png"></video>
             <div id="camera-mask">
-              <div class="point" v-bind:key="i" v-for="(pos,i) in positions" v-bind:style="{left:pos.x/cameraWidth*width+offsetLeft+'px', top:pos.y/cameraHeight*height+'px'}"></div>
+              <div
+                class="point"
+                v-bind:key="i"
+                v-for="(pos,i) in positions"
+                v-bind:style="{left:pos.x/cameraWidth*width+offsetLeft+'px', top:pos.y/cameraHeight*height+'px'}"
+              ></div>
             </div>
             <div id="radar"></div>
           </div>
@@ -111,7 +116,9 @@
             <p class="lead">使用前务必允许网站使用camera，点击videos中的任意视频开始学习。使用过程中将摄像头对准面部，保证摄像头能够拍摄到完整的嘴型</p>
           </div>
           <div class="col-lg-4 mr-auto">
-            <p class="lead">learn类型视频较长，用于教学。test类型视频中会提取对应的learn类型视频的关键语句进行重复性测试，每个句子重复三遍。用户可以通过test视频检验自己的学习成果。</p>
+            <p
+              class="lead"
+            >learn类型视频较长，用于教学。test类型视频中会提取对应的learn类型视频的关键语句进行重复性测试，每个句子重复三遍。用户可以通过test视频检验自己的学习成果。</p>
           </div>
         </div>
       </div>
@@ -142,8 +149,8 @@ export default {
       time_in: 500,
       end: false,
       finalScore: 0,
-      offsetLeft:0,
-      positions:[]
+      offsetLeft: 0,
+      positions: []
     };
   },
   computed: {
@@ -151,17 +158,14 @@ export default {
       return this.currentVideo.split("_")[0];
     },
     suggest() {
-      if(this.finalScore<3) {
-        return "From small beginnings comes great things"
-      }
-      else if (this.finalScore < 6) {
-        return "You have to believe in yourself."
-      }
-      else if(this.finalScore < 8) {
-        return "Keep on going never give up"
-      }
-      else {
-        return "Never underestimate your power to change yourself"
+      if (this.finalScore < 3) {
+        return "From small beginnings comes great things";
+      } else if (this.finalScore < 6) {
+        return "You have to believe in yourself.";
+      } else if (this.finalScore < 8) {
+        return "Keep on going never give up";
+      } else {
+        return "Never underestimate your power to change yourself";
       }
     }
   },
@@ -174,6 +178,16 @@ export default {
     this.cameraHeight = videoELWebCam.videoHeight;
     this.radarChart = this.drawRadar();
     this.lineChart = this.drawLine();
+    window.onresize = () => {
+      return (() => {
+        const videoELWebCam = document.querySelector("#cam");
+        this.cameraWidth = videoELWebCam.videoWidth;
+        this.cameraHeight = videoELWebCam.videoHeight;
+        this.height = videoELWebCam.offsetHeight;
+        this.width = (this.height / this.cameraHeight) * this.cameraWidth;
+        this.offsetLeft = (videoELWebCam.offsetWidth - this.width) / 2;
+      })();
+    };
     await this.$AI.nets.ssdMobilenetv1.load("/static/weights");
     await this.$AI.loadFaceLandmarkModel("/static/weights");
     this.camera();
@@ -369,9 +383,9 @@ export default {
       return lineChart;
     },
     updateRadar: function(scores) {
-      const old_scores = this.radarChart.getOption().series[0].data[0].value
-      for (let i=0;i<4;++i) {
-        scores[i] = scores[i] * 0.2 + old_scores[i] * 0.8
+      const old_scores = this.radarChart.getOption().series[0].data[0].value;
+      for (let i = 0; i < 4; ++i) {
+        scores[i] = scores[i] * 0.2 + old_scores[i] * 0.8;
       }
       this.radarChart.setOption({
         series: {
@@ -402,7 +416,9 @@ export default {
       window.URL =
         window.URL || window.webkitURL || window.mozURL || window.msURL;
       if (!navigator.getUserMedia) {
-        alert("无法使用摄像头和麦克风，请检查摄像头和麦克风的授权情况，推荐最新版的chrome浏览器访问此应用。由于Apple对摄像头权限控制太过严格，该应用无法在Apple设备上运行，使用Apple的用户请更换成其他设备。");
+        alert(
+          "无法使用摄像头和麦克风，请检查摄像头和麦克风的授权情况，推荐最新版的chrome浏览器访问此应用。由于Apple对摄像头权限控制太过严格，该应用无法在Apple设备上运行，使用Apple的用户请更换成其他设备。"
+        );
       } else {
         navigator.mediaDevices
           .getUserMedia({
@@ -411,7 +427,7 @@ export default {
           })
           .then(stream => {
             const video = document.querySelector("#cam");
-            video.srcObject = stream; 
+            video.srcObject = stream;
           });
       }
     },
@@ -424,8 +440,8 @@ export default {
       this.cameraWidth = videoELWebCam.videoWidth;
       this.cameraHeight = videoELWebCam.videoHeight;
       this.height = videoELWebCam.offsetHeight;
-      this.width = this.height/this.cameraHeight*this.cameraWidth;
-      this.offsetLeft = (videoELWebCam.offsetWidth - this.width)/2;
+      this.width = (this.height / this.cameraHeight) * this.cameraWidth;
+      this.offsetLeft = (videoELWebCam.offsetWidth - this.width) / 2;
       this.playing = true;
       setTimeout(this.getResult(), this.time_in);
       this.end = false;
@@ -455,10 +471,10 @@ export default {
         )
         .withFaceLandmarks();
       if (result !== undefined && resultWebCam !== undefined) {
-        this.positions = resultWebCam.landmarks.positions.slice(48,67);
+        this.positions = resultWebCam.landmarks.positions.slice(48, 67);
         const mark1 = this.getCosDistance(
           this.getFeature(result.landmarks, 15, 20),
-          this.getFeature(resultWebCam.landmarks, 15, 20)          
+          this.getFeature(resultWebCam.landmarks, 15, 20)
         );
         const mark2 = this.getCosDistance(
           this.getFeature(result.landmarks, 15, 30),
@@ -472,7 +488,12 @@ export default {
           this.getFeature(result.landmarks, 15, 50),
           this.getFeature(resultWebCam.landmarks, 15, 50)
         );
-        const data = [Math.sqrt(mark1), Math.sqrt(mark2), Math.sqrt(mark3), Math.sqrt(mark4)]
+        const data = [
+          Math.sqrt(mark1),
+          Math.sqrt(mark2),
+          Math.sqrt(mark3),
+          Math.sqrt(mark4)
+        ];
         this.updateLine(data);
         this.updateRadar(data);
       }
@@ -543,14 +564,14 @@ export default {
   height: 4px;
   width: 4px;
   border-radius: 2px;
-  background-color: lightseagreen;
+  background-color: white;
   position: absolute;
   z-index: 20;
-  transition: top .5s, left .5s;
+  transition: top 0.5s, left 0.5s;
 }
 
-@media (min-width:1170px) {
-  #cam{
+@media (min-width: 1170px) {
+  #cam {
     width: 100%;
     height: 200px;
     box-sizing: border-box;
@@ -558,24 +579,24 @@ export default {
     /* object-fit: cover; */
     float: left;
   }
-  #radar{
+  #radar {
     width: 100%;
     height: 200px;
     box-sizing: border-box;
   }
 }
 
-@media (max-width:1170px){
+@media (max-width: 1170px) {
   .sidebar {
     width: 100%;
   }
-  #cam{
+  #cam {
     width: 50%;
     height: 200px;
     box-sizing: border-box;
     float: left;
   }
-  #radar{
+  #radar {
     width: 50%;
     height: 200px;
     float: right;
