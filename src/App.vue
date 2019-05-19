@@ -94,7 +94,7 @@
                 class="point"
                 v-bind:key="i"
                 v-for="(vpos,i) in vpositions"
-                v-bind:style="{left:vpos.x/videoWidth*vwidth+5+'px', top:vpos.y/videoHeight*vheight+'px'}"
+                v-bind:style="{left:vpos.x/videoWidth*vwidth+10+'px', top:vpos.y/videoHeight*vheight+'px'}"
               ></div>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default {
       playing: false,
       radarOption: null,
       lineOption: null,
-      time_in: 300,
+      time_in: 200,
       end: false,
       finalScore: 0,
       offsetLeft: 0,
@@ -503,10 +503,10 @@ export default {
           this.getFeature(resultWebCam.landmarks, 15, 50)
         );
         const data = [
-          mark1*3<10?mark1*3:10,
-          mark2*3<10?mark2*3:10,
-          mark3*3<10?mark3*3:10,
-          mark4*3<10?mark4*3:10
+          mark1*10<1?mark1*10:1,
+          mark2*10<1?mark2*10:1,
+          mark3*10<1?mark3*10:1,
+          mark4*10<1?mark4*10:1
         ];
         this.updateLine(data);
         this.updateRadar(data);
@@ -578,13 +578,13 @@ export default {
 }
 
 .point {
-  height: 4px;
-  width: 4px;
-  border-radius: 2px;
+  height: 2px;
+  width: 2px;
+  border-radius: 1px;
   background-color: white;
   position: absolute;
   z-index: 20;
-  transition: top 0.3s, left 0.3s;
+  transition: top 0.1s, left 0.1s;
 }
 
 @media (min-width: 1170px) {
